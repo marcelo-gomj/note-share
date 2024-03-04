@@ -2,7 +2,7 @@ import { RouteHandler } from "fastify";
 import { BodyRegister } from "../types/validation";
 import prisma from "../services/prisma";
 import { compare } from "bcrypt";
-import { generateJwtToken } from "../services/jwt-auth";
+import { generateJwtToken } from "../services/jwt";
 
 export const loginController: RouteHandler = async (req, res) => {
   const { username, password } = req.body as BodyRegister;
