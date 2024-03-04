@@ -1,24 +1,32 @@
 import "dotenv/config";
-import fastify, { FastifyInstance } from "fastify";
+import Fastify, { FastifyListenOptions } from "fastify";
 import { serverRoutes } from "./services/server-routes";
 import routes from "./routes/routes";
-import fastifyJwt from "@fastify/jwt";
+import { curry } from "ramda";
+import cors from "@fastify/cors";
 
-function serverHandler() {
-  console.log("SERVER RUNNING PORT : ", process.env.PORT);
+const serverHandler = (port: number) => () => {
+  console.log("SERVER RUNNING PORT : ", port);
 }
 
-function server(fastify: FastifyInstance) {
-  const configFastify = { port: Number(process.env.PORT) ?? 3001 };
+function server() {
+  const fastify = Fastify();
+  fastify.register(cors, {
+    origin: true
+  })
 
-  fastify.register(fastifyJwt, { secret: process.env.SECRET_KEY ?? "" })
+  const PORT = Number(process.env.PORT) ?? 3001;
+
   serverRoutes(fastify, routes);
 
   try {
-    fastify.listen(configFastify, serverHandler);
+    fastify.listen(
+      { port: PORT },
+      serverHandler(PORT)
+    );
   } catch (err) {
-    process.exit(1)
+    process.exit(0)
   }
 }
 
-export default server(fastify())
+server()

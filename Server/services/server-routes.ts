@@ -1,22 +1,28 @@
-import { FastifyInstance, RouteHandler, RouteOptions } from "fastify";
+import { FastifyInstance, HTTPMethods, RouteHandler, RouteOptions } from "fastify";
 import * as R from "ramda";
 
-type HttpMethods = "get" | "post" | 'delete';
 type curryRoutes = (fastify: FastifyInstance) => void;
 
-function routePath(path: string) {
-  return R.curryN(4, (
-    method: HttpMethods,
-    options: Partial<RouteOptions>,
-    handler: RouteHandler,
-    fastify: FastifyInstance
-  ) => {
-    fastify[method](path, options, handler); // side-effects
+const routePath = R.curry((
+  path: string,
+  method: HTTPMethods,
+  options: Partial<RouteOptions>,
+  handler: RouteHandler,
+  fastify: FastifyInstance
+) => {
+  fastify.route({
+    ...options,
+    url: path,
+    method,
+    handler,
   })
-}
+})
 
-function serverRoutes(fastify: FastifyInstance, routes: curryRoutes[]) {
-  for (const route of routes) {
+
+function serverRoutes(fastify: FastifyInstance, routes: (curryRoutes | curryRoutes[])[]) {
+  const allRoutes = R.flatten(routes);
+
+  for (const route of allRoutes) {
     route(fastify) // side-effects
   }
 }
