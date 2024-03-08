@@ -49,7 +49,15 @@ const verifyToken = (
   { method: "POST" }
 ) as ReturnVerifyToken
 
+const checkUsername = (username: string) => fetchApi(
+  '/check-username/' + username,
+  "",
+  undefined,
+  { method: 'POST' }
+) as Promise<null | { username: boolean }>
+
 export {
   loginAndRegisterUser,
-  verifyToken
+  verifyToken,
+  checkUsername
 }
