@@ -24,6 +24,11 @@ export const registerController: RouteHandler = async (req, res) => {
   const token = sign({ username }, process.env.SECRET_KEY ?? "")
 
   const user = await prisma.user.create({
+    select: {
+      id: true,
+      username: true,
+      role: true,
+    },
     data: {
       username,
       password
@@ -31,7 +36,7 @@ export const registerController: RouteHandler = async (req, res) => {
   })
 
   res.code(201).send({
-    ...user,
+
     token
   })
 }
