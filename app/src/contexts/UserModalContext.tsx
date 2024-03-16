@@ -4,7 +4,7 @@ import { FC, ReactNode, createContext, useState } from "react";
 
 type ModalStateProps = {
   title?: string,
-  content: FC
+  content?: FC
 };
 
 type InitialStateContext = null | ModalStateProps;

@@ -1,22 +1,34 @@
 'use client'
 import { verifyToken } from "@/services/fetch-api";
 import { User } from "@/types/database";
-import { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie"
 
-type UserContextProps = User | null | undefined;
+type CallbackStateAuth = (user: User | null) => void;
+type UserState = User | null | undefined;
 
-export const UserContext = createContext(undefined as UserContextProps);
+type setUserAuthentificationFunction = (
+  token: string, callbackAuth?: CallbackStateAuth
+) => Promise<void>;
+
+type UserContextProps = {
+  user: UserState,
+  setUserAuthByToken: setUserAuthentificationFunction,
+  logOutUser: () => void
+};
+
+
+export const UserContext = createContext({} as UserContextProps);
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState(undefined as UserContextProps);
+  const [user, setUser] = useState(undefined as UserState);
   const [cookies, setCookies] = useCookies(["jwtToken"]);
 
   useEffect(verifyUserAuthentification, []);
 
   return (
     <UserContext.Provider
-      value={user}
+      value={{ user, setUserAuthByToken, logOutUser }}
     >
       {
         children
@@ -29,7 +41,6 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
     if (token) {
       verifyToken(token).then(user => {
-        console.log("RETURNING USER", user)
         setUser(user)
       })
 
@@ -37,6 +48,22 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     }
 
     setUser(null);
-
   }
+
+  async function setUserAuthByToken(
+    token: string,
+    callbackAuth?: CallbackStateAuth
+  ) {
+    const user = await verifyToken(token);
+    setCookies('jwtToken', token);
+    setUser(user);
+
+    if (callbackAuth) callbackAuth(user);
+  }
+
+  function logOutUser() {
+    setCookies("jwtToken", null);
+    setUser(null)
+  }
+
 }
