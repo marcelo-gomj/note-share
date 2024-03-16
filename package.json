@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "web": "cd ./app & yarn dev",
+    "server": "cd ./Server & yarn tsx watch ./server.ts"
+  }
+}
