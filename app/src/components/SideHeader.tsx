@@ -1,16 +1,45 @@
+import HomeIcon from "@/assets/home.svg";
+import SearchIcon from "@/assets/search.svg";
+import Link from "next/link";
+import NavItem from "./HeaderButtons/NavHeaderItem";
+import UserButton from "./HeaderButtons/UserButton";
+import LogOutUser from "./HeaderButtons/LogOutButton";
+import SearchButton from "./HeaderButtons/SearchButton";
+
+
 export default function SideHeader() {
   return (
     <header
-      className="flex items-center justify-center w-[20%] border-2"
+      className="flex select-none items-center pl-8 pr-5 w-[25%] font-medium border-r-[1px] border-neutral-900"
     >
       <nav
-        className="flex flex-col gap-5 text-white text-[1.2rem]"
+        className="flex flex-col w-full py-10 gap-6 text-[0.96rem]"
       >
-        <a>Inicio</a>
-        <a>Pesquisar</a>
-        <a>Perfil</a>
-        <a>Sobre</a>
+        <Link
+          href={'/'}
+        >
+          <NavItem
+            path="/"
+            Icon={HomeIcon}
+          >
+            <p>Inicio</p>
+          </NavItem>
+        </Link>
+
+        <SearchButton>
+          <NavItem
+            path="/fafa"
+            Icon={SearchIcon}
+          >
+            <p>Pesquisar</p>
+          </NavItem>
+        </SearchButton>
+
+        <UserButton />
+
+        <LogOutUser />
       </nav>
-    </header>
+    </header >
   )
 }
+
