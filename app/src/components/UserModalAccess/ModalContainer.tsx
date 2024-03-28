@@ -12,10 +12,10 @@ export default function ModalContainer({ }) {
     <section>
       {
         ModalContent ?
-          <div className="absolute flex items-center justify-center left-0 top-0 w-full h-[100vh] bg-[rgb(10,10,10,0.5)] animate-open-modal animate-close-modal cursor-pointer"
+          <div className="absolute flex items-center justify-center left-0 top-0 w-full h-[100vh] bg-[rgb(10,10,10,0.9)] animate-open-modal animate-close-modal cursor-pointer"
             onClick={handleClickOutContainer}
           >
-            <div className="flex flex-col relative bg-base-dark-100 cursor-default w-[50%] h-[75%] rounded-2xl">
+            <div className="flex flex-col relative bg-base-dark-100 cursor-default w-[50%] h-[75%] rounded-2xl border-[1px] border-base-dark-300">
 
               <div className="flex relative p-2 items-center justify-between w-full px-2 my-2">
                 <p className="text-[0.9rem] w-full px-5 text-center text-neutral-300">{userModal.title}</p>
