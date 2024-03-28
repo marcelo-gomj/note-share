@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { sign, verify, } from "jsonwebtoken"
 
 function generateJwtToken(username: string) {
