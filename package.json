@@ -1,6 +1,7 @@
 {
   "scripts": {
     "web": "cd ./app & yarn dev",
-    "server": "cd ./Server & yarn tsx watch ./server.ts"
+    "server": "cd ./Server & yarn tsx watch ./main.ts",
+    "test": "cd ./Server & yarn jest --watch --detectOpenHandles"
   }
 }
