@@ -1,17 +1,12 @@
 import { FastifySchema } from "fastify"
 import { routePath } from "../services/server-routes"
 import prisma from "../services/prisma"
+import { z } from "zod"
 
 const schema: FastifySchema = {
-  params: {
-    type: 'object',
-    properties: {
-      username: {
-        type: 'string'
-      }
-    },
-    required: ['username']
-  }
+  params: z.object({
+    username: z.string().default('')
+  })
 }
 
 const checkUsername = routePath('/check-username/:username', 'POST', { schema })

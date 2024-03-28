@@ -3,6 +3,7 @@ import { routePath } from "../services/server-routes";
 import useAuthentification from "../middlewares/use-authentification";
 import prisma from "../services/prisma";
 import { User } from "@prisma/client";
+import { z } from "zod";
 
 const users = routePath('/profile/:user')
 
@@ -12,29 +13,27 @@ const controller: RouteHandler = async (req, res) => {
 
   const notes = await prisma.notes.findMany({
     where: {
-      userId: params.user
+      userId: params.user,
+      is_public: true
     },
     take: 20,
-    skip: query.page - 1
+    skip: (query.page || 1) - 1
   })
 
   res.send({ notes })
 }
 
 const schema: FastifySchema = {
-  querystring: {
-    type: 'object',
-    properties: {
-      page: { type: "number", default: 1 },
-    }
-  }
+  querystring: z.object({
+    page: z.coerce.number().default(1)
+  })
 }
 
 export default users(
   'get',
   {
     schema,
-    preHandler: useAuthentification
+    // preHandler: useAuthentification
   },
   controller
 )
