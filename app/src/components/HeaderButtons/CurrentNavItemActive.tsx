@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
-type CurrentActiveNavProps = { path: string, children: ReactNode };
+type CurrentActiveNavProps = { path?: string, children: ReactNode };
 
 export default function CurrentActiveNav({ path, children }: CurrentActiveNavProps) {
   const isActive = usePathname() === path;

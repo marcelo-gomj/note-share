@@ -7,11 +7,14 @@ import NavItem from "./NavHeaderItem";
 import UserIcon from "@/assets/user.svg";
 import { UserModalContext } from "@/contexts/UserModalContext";
 import ModalLogin from "../UserModalAccess/ModalLoginAndRegister";
+import Link from "next/link";
+import UserIconProfile from "../UserIconProfile";
 
 
 export default function UserButton() {
   const { user } = useContext(UserContext);
   const { setModalContent } = useContext(UserModalContext);
+
 
   return (
     <div>
@@ -20,14 +23,19 @@ export default function UserButton() {
   )
 
   function handleUserState(userState: typeof user) {
-    if (userState) return (
-      <NavItem
-        path={'/profile/' + userState.username}
-        Icon={iconProfileComponent(userState.username)}
-      >
-        <p>Perfil</p>
-      </NavItem>
-    )
+    if (userState) {
+
+      return (
+        <Link href={'/profile/' + userState.username}>
+          <NavItem
+            path={'/profile/' + userState.username}
+            Icon={iconProfileComponent(userState.username)}
+          >
+            Perfil
+          </NavItem>
+        </Link >
+      )
+    }
 
     if (userState === null) return (
       <div onClick={handleClickRegisterButton}>
@@ -54,11 +62,11 @@ export default function UserButton() {
 
   function iconProfileComponent(username: string) {
     return () => (
-      <div>
-        <div className="w-6 h-6 flex justify-center items-center font-bold leading-[0] text-[1.5rem] rounded-full border-base-dark-500">
-          {head(username).toUpperCase()}
-        </div>
-      </div>
+      <UserIconProfile
+        username={username}
+        size={1.5}
+        weight={500}
+      />
     )
   }
 

@@ -10,7 +10,7 @@ import SearchButton from "./HeaderButtons/SearchButton";
 export default function SideHeader() {
   return (
     <header
-      className="flex select-none items-center pl-8 pr-5 w-[25%] font-medium border-r-[1px] border-neutral-900"
+      className="flex select-none items-center pl-2 pr-2 w-[25%] font-medium border-r-[1px] border-neutral-900"
     >
       <nav
         className="flex flex-col w-full py-10 gap-6 text-[0.96rem]"
