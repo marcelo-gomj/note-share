@@ -1,4 +1,4 @@
-import { User } from "@/types/database";
+import { NotesResult, User } from "@/types/database";
 import { curry } from "ramda";
 
 type BodyProps = { [key: string]: any }
@@ -56,8 +56,16 @@ const checkUsername = (username: string) => fetchApi(
   { method: 'POST' }
 ) as Promise<null | { username: boolean }>
 
+const listNotesByUser = (username: string) => fetchApi(
+  '/profile/' + username,
+  "",
+  undefined,
+  { method: 'GET' }
+) as Promise<null | NotesResult>
+
 export {
   loginAndRegisterUser,
   verifyToken,
-  checkUsername
+  checkUsername,
+  listNotesByUser
 }

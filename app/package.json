@@ -12,6 +12,7 @@
     "@prisma/client": "^5.10.2",
     "@types/ramda": "^0.29.10",
     "jwt-decode": "^4.0.0",
+    "moment": "^2.30.1",
     "next": "14.1.0",
     "ramda": "^0.29.1",
     "react": "^18",
