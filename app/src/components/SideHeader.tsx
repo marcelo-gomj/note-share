@@ -5,6 +5,7 @@ import NavItem from "./HeaderButtons/NavHeaderItem";
 import UserButton from "./HeaderButtons/UserButton";
 import LogOutUser from "./HeaderButtons/LogOutButton";
 import SearchButton from "./HeaderButtons/SearchButton";
+import CreateNoteButton from "./HeaderButtons/CreateNoteButton";
 
 
 export default function SideHeader() {
@@ -34,6 +35,8 @@ export default function SideHeader() {
             <p>Pesquisar</p>
           </NavItem>
         </SearchButton>
+
+        <CreateNoteButton />
 
         <UserButton />
 

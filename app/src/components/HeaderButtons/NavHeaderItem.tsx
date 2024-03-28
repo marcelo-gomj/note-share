@@ -1,5 +1,4 @@
 import CurrentActiveNav from "@/components/HeaderButtons/CurrentNavItemActive";
-import Link from "next/link";
 import { HTMLAttributes, ReactNode, } from "react";
 
 type IconProps = (props: HTMLAttributes<HTMLDivElement>) => ReactNode;
