@@ -25,7 +25,13 @@ const useAuthentification: preHandlerHookHandler = async (req, res, done) => {
     }
   })
 
+  if (!user_profile) {
+    res.status(404).send("User incorrect for operation");
+    return;
+  }
+
   req.params = {
+    //@ts-ignore
     ...req.params,
     user_profile
   };
