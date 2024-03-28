@@ -147,7 +147,7 @@ export default function RegisterForm({ setForm }: LoginFormProps) {
         message: 'O usuário tem que ter no mínimo 3 caracteres '
       },
       maxLength: {
-        value: 29,
+        value: 32,
         message: 'O usuário tem que ter no máximo 29 caracteres'
       },
     }
