@@ -1,16 +1,19 @@
 import "dotenv/config";
 import Fastify, { FastifyListenOptions } from "fastify";
 import { serverRoutes } from "./services/server-routes";
+import { ZodTypeProvider, validatorCompiler, serializerCompiler } from "fastify-type-provider-zod";
 import routes from "./routes/routes";
-import { curry } from "ramda";
 import cors from "@fastify/cors";
 
-const serverHandler = (port: number) => () => {
-  console.log("SERVER RUNNING PORT : ", port);
-}
+type CallbackServer = (port?: number) => () => void;
 
-function server() {
+export function server(handler?: CallbackServer) {
   const fastify = Fastify();
+
+  fastify.setValidatorCompiler(validatorCompiler)
+  fastify.setSerializerCompiler(serializerCompiler);
+
+  fastify.withTypeProvider<ZodTypeProvider>();
   fastify.register(cors, {
     origin: true
   })
@@ -22,11 +25,11 @@ function server() {
   try {
     fastify.listen(
       { port: PORT },
-      serverHandler(PORT)
+      (handler ? handler(PORT) : () => { })
     );
   } catch (err) {
     process.exit(0)
   }
-}
 
-server()
+  return fastify
+}
