@@ -25,18 +25,18 @@ export default function RootLayout({
       <NotificationsProvider>
         <UserContextProvider>
           <UserModalProvider>
-            <body className={inter.className + ' flex gap-3 h-[100vh] w-full max-w-[1500px] overflow-hidden'}>
+            <body className={inter.className + ' flex h-[100vh] w-full max-w-[1500px] overflow-hidden'}>
               <SideHeader />
 
-              {/* <main
-              className="flex w-[75%] overflow-auto"
-            >
-              <div
-                className="w-[60%] overflow-auto border-red"
+              <main
+                className="flex pl-20 w-[100%] overflow-auto"
               >
-                {children}
-              </div>
-            </main> */}
+                <div
+                  className="w-[70%] border-red"
+                >
+                  {children}
+                </div>
+              </main>
               <ModalContainer />
               <NotificationsContainer />
             </body>
