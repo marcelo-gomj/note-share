@@ -1,5 +1,4 @@
 import { preHandlerHookHandler } from "fastify"
-import { verify } from "jsonwebtoken";
 import prisma from "../services/prisma";
 import { JwtFormatDecoded } from "../types/validation";
 import { verifyAsync } from "../services/jwt";
@@ -9,7 +8,6 @@ const useAuthentification: preHandlerHookHandler = async (req, res, done) => {
 
   if (!jwtDecoded) {
     res.send("JWT invalid")
-    return;
   }
 
   const { username } = jwtDecoded;
@@ -27,7 +25,6 @@ const useAuthentification: preHandlerHookHandler = async (req, res, done) => {
 
   if (!user_profile) {
     res.status(404).send("User incorrect for operation");
-    return;
   }
 
   req.params = {
@@ -36,7 +33,6 @@ const useAuthentification: preHandlerHookHandler = async (req, res, done) => {
     user_profile
   };
 
-  done()
 }
 
 

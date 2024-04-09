@@ -5,10 +5,8 @@ import { z } from "zod";
 import prisma from "../services/prisma";
 import { UserProfileMiddleware } from "../types/validation";
 
-type ParamsWithAuth<T> = T & UserProfileMiddleware
-
-const TEXT_FIELD = z.string().max(750).min(5);
-const IS_PUBLIC_FIELD = z.coerce.boolean().default(true);
+const TEXT_FIELD = z.string().max(1000).min(1);
+const IS_PUBLIC_FIELD = z.coerce.boolean();
 
 const createNoteBody = {
   body: z.object({
@@ -17,19 +15,17 @@ const createNoteBody = {
   })
 }
 
-const updateNoteParams = {
-  params: z.object({
-    noteId: z.string()
-  }),
+const updateNoteBody = {
   body: z.object({
+    id: z.string(),
     text: TEXT_FIELD.optional(),
     is_public: IS_PUBLIC_FIELD.optional()
   })
 }
 
-const deleteNoteParams = {
-  params: z.object({
-    noteId: z.string()
+const deleteNoteBody = {
+  body: z.object({
+    id: z.string()
   })
 }
 
@@ -43,7 +39,7 @@ const createNote = routePath('/note', 'POST', optionsFastifyWithAuth(createNoteB
     const body = request.body as z.infer<typeof createNoteBody.body>;
     const { user_profile } = request.params as UserProfileMiddleware;
 
-    const createdNote = await prisma.notes.create({
+    const created = await prisma.notes.create({
       select: {
         id: true,
         is_public: true,
@@ -56,20 +52,22 @@ const createNote = routePath('/note', 'POST', optionsFastifyWithAuth(createNoteB
       }
     })
 
-    reply.status(201).send(createdNote)
+    console.log(created)
+
+    reply.status(201).send(created)
   }
 );
 
-const noteRouteWithId = routePath('/note/:noteId');
+const noteRouteWithId = routePath('/note');
 
-const updateNote = noteRouteWithId('PUT', optionsFastifyWithAuth(updateNoteParams),
+const updateNote = noteRouteWithId('PUT', optionsFastifyWithAuth(updateNoteBody),
   async (request, reply) => {
-    const params = request.params as ParamsWithAuth<z.infer<typeof updateNoteParams.params>>;
-    const body = request.body as z.infer<typeof updateNoteParams.body>;
+    const params = request.params as UserProfileMiddleware;
+    const body = request.body as z.infer<typeof updateNoteBody.body>;
 
     const updatedNote = await prisma.notes.update({
       where: {
-        id: params.noteId,
+        id: body.id,
         userId: params.user_profile.username
       },
       select: {
@@ -82,11 +80,10 @@ const updateNote = noteRouteWithId('PUT', optionsFastifyWithAuth(updateNoteParam
   }
 );
 
-type DeleteParams = z.infer<typeof deleteNoteParams.params> & UserProfileMiddleware;
-
-const deleteNote = noteRouteWithId('DELETE', optionsFastifyWithAuth(deleteNoteParams),
+const deleteNote = noteRouteWithId('DELETE', optionsFastifyWithAuth(deleteNoteBody),
   async (request, reply) => {
-    const { user_profile, noteId } = request.params as DeleteParams;
+    const { user_profile } = request.params as UserProfileMiddleware;
+    const body = request.body as z.infer<typeof deleteNoteBody.body>
 
     try {
       const deletedNote = await prisma.notes.delete({
@@ -95,7 +92,7 @@ const deleteNote = noteRouteWithId('DELETE', optionsFastifyWithAuth(deleteNotePa
         },
         where: {
           userId: user_profile.username,
-          id: noteId
+          id: body.id
         }
       })
 

@@ -9,7 +9,7 @@ const notes = routePath('/notes');
 
 const querystring = z.object({
   user: z.string().optional().describe('notes by users'),
-  page: z.coerce.number().default(1),
+  page: z.coerce.number().default(1).optional(),
   filter: z.enum(['published', 'updated']).optional()
 })
 
@@ -17,7 +17,7 @@ type QueryProps = z.infer<typeof querystring>
 
 export default notes('GET', { schema: { querystring } }, async (req, res) => {
   const { user, page } = req.query as QueryProps;
-  const { authorization } = req.headers
+  const authorization = req.headers.authorization;
   const isCurrentUser = await getAuthorizationNotes(authorization, user);
 
   const query = await prisma.notes.findMany({
@@ -25,9 +25,13 @@ export default notes('GET', { schema: { querystring } }, async (req, res) => {
       userId: user,
       ...(isCurrentUser ? null : { is_public: true })
     },
-    skip: 20 * (page - 1),
-    take: 20
+    orderBy: {
+      created_at: "desc"
+    },
+    skip: 30 * ((page || 1) - 1),
+    take: 30
   })
+
 
   res.send(query)
 })

@@ -1,5 +1,5 @@
 import { UserContext } from "@/contexts/UserContext";
-import { UserModalContext } from "@/contexts/UserModalContext";
+import { ModalContext } from "@/contexts/ModalContext";
 import { formAccessMode } from "@/types/forms-type";
 import { useContext, useEffect } from "react";
 import CheckIcon from "@/assets/check.svg";
@@ -11,7 +11,7 @@ type SubmitStateProps = {
 
 function SubmitState({ setForm }: SubmitStateProps) {
   const { user } = useContext(UserContext);
-  const { setModalContent } = useContext(UserModalContext);
+  const { setModalContent } = useContext(ModalContext);
 
   useEffect(showSubmitState, []);
 
@@ -26,7 +26,7 @@ function SubmitState({ setForm }: SubmitStateProps) {
 
   function showSubmitState() {
     let state = setTimeout(() => {
-      setModalContent(null)
+      setModalContent('session-user')
     }, 3000)
 
     return () => {

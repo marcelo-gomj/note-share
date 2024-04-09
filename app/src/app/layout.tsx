@@ -3,7 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import SideHeader from "@/components/SideHeader";
 import { UserContextProvider } from "@/contexts/UserContext";
-import { UserModalProvider } from "@/contexts/UserModalContext";
+import { ModalProvider } from "@/contexts/ModalContext";
 import ModalContainer from "@/components/UserModalAccess/ModalContainer";
 import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import NotificationsContainer from "@/components/Notifications/NotificationsContainer";
@@ -22,31 +22,31 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <NotificationsProvider>
-        <UserContextProvider>
-          <UserModalProvider>
-            <body className={inter.className + ' flex h-[100vh] w-full max-w-[1500px] overflow-hidden'}>
-              <SideHeader />
+      {/* <NotificationsProvider> */}
+      <UserContextProvider>
+        <ModalProvider>
+          <body className={inter.className + ' flex h-[100vh] w-full max-w-[1500px] overflow-hidden'}>
+            <SideHeader />
 
-              <main
-                className="flex pl-20 w-[100%] overflow-auto"
+            <main
+              className="flex pl-20 w-[100%] overflow-auto"
+            >
+              <div
+                className="w-[70%] border-red"
               >
-                <div
-                  className="w-[70%] border-red"
-                >
-                  {children}
-                </div>
-              </main>
-              <ModalContainer />
-              <NotificationsContainer />
-            </body>
+                {children}
+              </div>
+            </main>
+            <ModalContainer />
+            <NotificationsContainer />
+          </body>
 
 
-          </UserModalProvider>
-        </UserContextProvider>
+        </ModalProvider>
+      </UserContextProvider>
 
 
-      </NotificationsProvider>
+      {/* </NotificationsProvider> */}
     </html>
   );
 }

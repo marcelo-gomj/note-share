@@ -13,7 +13,7 @@
     "@types/ramda": "^0.29.10",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
-    "next": "14.1.0",
+    "next": "^14.1.4",
     "ramda": "^0.29.1",
     "react": "^18",
     "react-cookie": "^7.1.0",

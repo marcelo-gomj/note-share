@@ -5,7 +5,7 @@ import { head } from "ramda";
 import { HTMLAttributes, ReactNode, useContext } from "react";
 import NavItem from "./NavHeaderItem";
 import UserIcon from "@/assets/user.svg";
-import { UserModalContext } from "@/contexts/UserModalContext";
+import { ModalContext } from "@/contexts/ModalContext";
 import ModalLogin from "../UserModalAccess/ModalLoginAndRegister";
 import Link from "next/link";
 import UserIconProfile from "../UserIconProfile";
@@ -13,7 +13,7 @@ import UserIconProfile from "../UserIconProfile";
 
 export default function UserButton() {
   const { user } = useContext(UserContext);
-  const { setModalContent } = useContext(UserModalContext);
+  const { setModalContent } = useContext(ModalContext);
 
 
   return (
@@ -71,7 +71,7 @@ export default function UserButton() {
   }
 
   function handleClickRegisterButton() {
-    setModalContent({
+    setModalContent('session-user', {
       title: "Cadastrar / Entrar",
       content: ModalLogin
     })

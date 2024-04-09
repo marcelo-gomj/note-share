@@ -22,6 +22,7 @@ const routePath = R.curry((
 function serverRoutes(fastify: FastifyInstance, routes: (curryRoutes | curryRoutes[])[]) {
   const allRoutes = R.flatten(routes);
 
+
   for (const route of allRoutes) {
     route(fastify) // side-effects
   }

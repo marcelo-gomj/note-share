@@ -1,6 +1,5 @@
 import { FastifySchema, RouteHandler } from "fastify";
 import { routePath } from "../services/server-routes";
-import useAuthentification from "../middlewares/use-authentification";
 import prisma from "../services/prisma";
 import { User } from "@prisma/client";
 import { z } from "zod";

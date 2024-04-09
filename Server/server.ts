@@ -15,7 +15,8 @@ export function server(handler?: CallbackServer) {
 
   fastify.withTypeProvider<ZodTypeProvider>();
   fastify.register(cors, {
-    origin: true
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
   })
 
   const PORT = Number(process.env.PORT) ?? 3001;

@@ -14,6 +14,7 @@ type setUserAuthentificationFunction = (
 type UserContextProps = {
   user: UserState,
   setUserAuthByToken: setUserAuthentificationFunction,
+  token: string,
   logOutUser: () => void
 };
 
@@ -28,7 +29,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
 
   return (
     <UserContext.Provider
-      value={{ user, setUserAuthByToken, logOutUser }}
+      value={{ user, setUserAuthByToken, logOutUser, token: cookies.jwtToken }}
     >
       {
         children

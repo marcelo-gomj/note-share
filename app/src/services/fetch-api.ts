@@ -1,8 +1,8 @@
-import { NotesResult, User } from "@/types/database";
+import { Notes, NotesResult, User } from "@/types/database";
 import { curry } from "ramda";
 
 type BodyProps = { [key: string]: any }
-type HttpMethods = 'GET' | "POST" | "DELETE";
+type HttpMethods = 'GET' | "POST" | "DELETE" | 'PUT' | 'DELETE';
 type HttpOptions = RequestInit & { method: HttpMethods, body?: BodyProps };
 type LoginBody = { username: string, password: string };
 type ModeUserHandler = 'login' | 'register';
@@ -56,16 +56,19 @@ const checkUsername = (username: string) => fetchApi(
   { method: 'POST' }
 ) as Promise<null | { username: boolean }>
 
-const listNotesByUser = (username: string) => fetchApi(
-  '/profile/' + username,
-  "",
+const listNotesByUser = (username: string, token?: string) => fetchApi(
+  '/notes?user=' + username,
+  token,
   undefined,
-  { method: 'GET' }
-) as Promise<null | NotesResult>
+  { method: 'GET', cache: "no-store" }
+) as Promise<null | Notes[]>
+
+
 
 export {
   loginAndRegisterUser,
   verifyToken,
   checkUsername,
-  listNotesByUser
+  listNotesByUser,
+  fetchApi
 }
