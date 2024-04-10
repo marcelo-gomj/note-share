@@ -6,7 +6,8 @@ import { ModalContext } from "@/contexts/ModalContext";
 import CreateNoteForm from "../Forms/CreateNoteForm";
 
 function CreateNoteButton() {
-  const { setModalContent } = useContext(ModalContext)
+  const { setModalContent } = useContext(ModalContext);
+
   return (
     <div
       onClick={handlerClickCreateNote}

@@ -20,22 +20,25 @@ type OptionsNoteProps = {
 }
 
 function OptionsNote({ note, controlListNotes }: OptionsNoteProps) {
-  const { token } = useContext(UserContext);
+  const { token, user } = useContext(UserContext);
   const { setModalContent } = useContext(ModalContext);
   const [openOptions, setOpenOptions] = useState(false);
 
+  const enableByUser = user?.username === note.userId;
   const optionsNote = toPairs({
-    'edit': { Icon: EditIcon, title: 'Editar', handler: handleEditNote },
-    'forward': { Icon: ShareIcon, title: 'Encaminhar', handler: handleForwardNote },
-    'delete': { Icon: DeleteIcon, title: 'Apagar', handler: handleDeletNote }
+    'edit': { Icon: EditIcon, title: 'Editar', handler: handleEditNote, enableByUser },
+    'forward': { Icon: ShareIcon, title: 'Encaminhar', handler: handleForwardNote, enableByUser: !!token },
+    'delete': { Icon: DeleteIcon, title: 'Apagar', handler: handleDeletNote, enableByUser }
   })
 
-  return (
+
+  return token ? (
     <div className="relative h-full"
       onMouseLeave={() => {
         setOpenOptions(false)
       }}
     >
+
       <div className="flex items-center px-0.5 h-full rounded-md"
         onClick={showOptionsNote}
       >
@@ -47,18 +50,21 @@ function OptionsNote({ note, controlListNotes }: OptionsNoteProps) {
       >
         {
           optionsNote.map(
-            ([key, { Icon, title, handler }]) => (
-              <li key={key} className="flex gap-10 pl-6 pr-12 items-center py-3 cursor-pointer hover:bg-base-dark-600"
-                onClick={() => handler()}
-              >
-                <Icon className="w-[1.1rem] h-[1.1rem] stroke-[2.5]" />
-                {title}
-              </li>
+            ([key, { Icon, title, handler, enableByUser }]) => (
+              enableByUser ?
+                <li key={key} className="flex gap-10 pl-6 pr-12 items-center py-3 cursor-pointer hover:bg-base-dark-600"
+                  onClick={() => handler()}
+                >
+                  <Icon className="w-[1.1rem] h-[1.1rem] stroke-[2.5]" />
+                  {title}
+                </li>
+                :
+                null
             ))
         }
       </ul>
     </div>
-  )
+  ) : null;
 
 
   // open optins one turn
@@ -70,34 +76,34 @@ function OptionsNote({ note, controlListNotes }: OptionsNoteProps) {
   function handleEditNote() {
     setModalContent('create-note', {
       title: 'Editar Nota',
-      content: ({ finallyFn }) => <CreateNoteForm note={note} createdNoteFn={finallyFn} />,
+      content: ({ finallyFn }) => <CreateNoteForm note={note} finallyFn={finallyFn} />,
       typeSize: "md",
       finallyFn: finallyEditionMode
     })
-}
-
-async function handleDeletNote() {
-  const deletedNote = await deleteNote(token, note.id);
-
-  if (deletedNote) {
-    controlListNotes((notes) => filter(note => note.id !== deletedNote?.id, notes))
   }
-}
 
-function handleForwardNote() {}
+  async function handleDeletNote() {
+    const deletedNote = await deleteNote(token, note.id);
 
-function finallyEditionMode(note: Notes) {
-  return controlListNotes(notes =>
-    reduce((notesAcc, CurrentNote) => {
-      if (CurrentNote.id === note.id) {
-        CurrentNote.text = note.text;
-        CurrentNote.is_public = note.is_public
-      }
+    if (deletedNote) {
+      controlListNotes((notes) => filter(note => note.id !== deletedNote?.id, notes))
+    }
+  }
 
-      return [...notesAcc, CurrentNote]
-    }, [] as Notes[], notes)
-  )
-}
+  function handleForwardNote() { }
+
+  function finallyEditionMode(note: Notes) {
+    return controlListNotes(notes =>
+      reduce((notesAcc, CurrentNote) => {
+        if (CurrentNote.id === note.id) {
+          CurrentNote.text = note.text;
+          CurrentNote.is_public = note.is_public
+        }
+
+        return [...notesAcc, CurrentNote]
+      }, [] as Notes[], notes)
+    )
+  }
 
 
 }

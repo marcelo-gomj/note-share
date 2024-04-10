@@ -6,8 +6,6 @@ import UserIcon from "@/assets/user.svg";
 
 import getTimeNote from "@/services/moment";
 import { Notes } from "@/types/database";
-import OptionsNote from "./OptionsNote";
-import { StateNoteFn } from "./ListNotes";
 import { ReactNode } from "react";
 
 type NoteItemProps = {
@@ -48,8 +46,6 @@ function NoteItem({ note, children }: NoteItemProps) {
       </div>
     </div>
   )
-
-
 }
 
 export default NoteItem;

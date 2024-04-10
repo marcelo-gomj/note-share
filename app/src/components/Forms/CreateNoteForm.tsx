@@ -19,13 +19,13 @@ type CreateNoteFormProps = {
     text: string,
     is_public: boolean
   },
-  createdNoteFn?: (note: Partial<Notes>) => void;
+  finallyFn?: (note: Partial<Notes>) => void;
 }
 type NoteTextForm = {
   text: string
 }
 
-function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
+function CreateNoteForm({ note, finallyFn }: CreateNoteFormProps) {
   const { register, handleSubmit, watch, formState, setValue } = useForm<NoteTextForm>({
     defaultValues: {
       text: note ? note.text : ''
@@ -138,9 +138,11 @@ function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
         text,
         is_public
       })
+
+      setModalContent('')
     }
 
-    if (createdNoteFn) createdNoteFn({ id: note ? note.id : createdIdNote, text, is_public });
+    if (finallyFn) finallyFn({ id: note ? note.id : createdIdNote, text, is_public });
     resetFields()
   }
 
