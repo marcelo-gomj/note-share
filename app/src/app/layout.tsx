@@ -5,7 +5,6 @@ import SideHeader from "@/components/SideHeader";
 import { UserContextProvider } from "@/contexts/UserContext";
 import { ModalProvider } from "@/contexts/ModalContext";
 import ModalContainer from "@/components/UserModalAccess/ModalContainer";
-import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import NotificationsContainer from "@/components/Notifications/NotificationsContainer";
 
 const inter = Inter({ subsets: ["latin"] });

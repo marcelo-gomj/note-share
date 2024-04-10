@@ -2,7 +2,7 @@
 
 import PointOptions from "@/assets/point-menu.svg";
 import { Notes } from "@/types/database";
-import { filter, toPairs } from "ramda";
+import { filter, reduce, toPairs } from "ramda";
 import { useContext, useState } from "react";
 import EditIcon from "@/assets/edit.svg";
 import ShareIcon from "@/assets/share.svg";
@@ -16,13 +16,13 @@ import { useRouter } from "next/navigation";
 
 type OptionsNoteProps = {
   note: Notes,
+  controlListNotes: StateNoteFn
 }
 
-function OptionsNote({ note }: OptionsNoteProps) {
+function OptionsNote({ note, controlListNotes }: OptionsNoteProps) {
   const { token } = useContext(UserContext);
   const { setModalContent } = useContext(ModalContext);
   const [openOptions, setOpenOptions] = useState(false);
-  const router = useRouter()
 
   const optionsNote = toPairs({
     'edit': { Icon: EditIcon, title: 'Editar', handler: handleEditNote },
@@ -61,28 +61,45 @@ function OptionsNote({ note }: OptionsNoteProps) {
   )
 
 
-
+  // open optins one turn
   function showOptionsNote() {
     setOpenOptions(true);
   }
 
+  // open create note modal in edition mode
   function handleEditNote() {
     setModalContent('create-note', {
-      title: 'Editar Note',
+      title: 'Editar Nota',
       content: ({ finallyFn }) => <CreateNoteForm note={note} createdNoteFn={finallyFn} />,
       typeSize: "md",
-      finallyFn: () => {
-        router.refresh()
-      }
+      finallyFn: finallyEditionMode
     })
-  }
+}
 
-  async function handleDeletNote() {
-    await deleteNote(token, note.id)
-    router.refresh()
-  }
+async function handleDeletNote() {
+  const deletedNote = await deleteNote(token, note.id);
 
-  function handleForwardNote() { }
+  if (deletedNote) {
+    controlListNotes((notes) => filter(note => note.id !== deletedNote?.id, notes))
+  }
+}
+
+function handleForwardNote() {}
+
+function finallyEditionMode(note: Notes) {
+  return controlListNotes(notes =>
+    reduce((notesAcc, CurrentNote) => {
+      if (CurrentNote.id === note.id) {
+        CurrentNote.text = note.text;
+        CurrentNote.is_public = note.is_public
+      }
+
+      return [...notesAcc, CurrentNote]
+    }, [] as Notes[], notes)
+  )
+}
+
+
 }
 
 export default OptionsNote;

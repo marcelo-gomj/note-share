@@ -8,12 +8,14 @@ import getTimeNote from "@/services/moment";
 import { Notes } from "@/types/database";
 import OptionsNote from "./OptionsNote";
 import { StateNoteFn } from "./ListNotes";
+import { ReactNode } from "react";
 
 type NoteItemProps = {
   note: Notes,
+  children: ReactNode
 }
 
-function NoteItem({ note }: NoteItemProps) {
+function NoteItem({ note, children }: NoteItemProps) {
   const StatusIcon = note.is_public ? GlobeIcon : LockerIcon;
 
   return (
@@ -37,9 +39,7 @@ function NoteItem({ note }: NoteItemProps) {
             <StatusIcon className="h-5 w-5" />
           </div>
 
-          <OptionsNote
-            note={note}
-          />
+          {children}
         </div>
       </header>
 

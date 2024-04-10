@@ -7,6 +7,10 @@ import { UserContext } from "@/contexts/UserContext";
 import { createNote, updateNote } from "@/services/note-fetch";
 import { ModalContext } from "@/contexts/ModalContext";
 import ModalLoginAndRegister from "../UserModalAccess/ModalLoginAndRegister";
+import { Notes } from "@/types/database";
+import { revalidateTag } from "next/cache";
+import { updateA } from "@/server-actions/updateListActions";
+import { useRouter } from "next/navigation";
 
 type PrivacyStateNote = 'public' | 'private';
 type CreateNoteFormProps = {
@@ -15,7 +19,7 @@ type CreateNoteFormProps = {
     text: string,
     is_public: boolean
   },
-  createdNoteFn?: () => void;
+  createdNoteFn?: (note: Partial<Notes>) => void;
 }
 type NoteTextForm = {
   text: string
@@ -32,6 +36,7 @@ function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
   const [openPrivacyStates, setOpenPrivacyState] = useState(false)
   const { token, user } = useContext(UserContext);
   const { setModalContent } = useContext(ModalContext);
+  const router = useRouter()
 
   const notePrivacyStates = {
     "public": { Icon: PublicIcon, label: 'Nota pública' },
@@ -100,8 +105,9 @@ function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
     )
   }
 
+
+
   async function handleSubmitFunction({ text }: NoteTextForm) {
-    console.log("1. ENTROU NA FUNCTION SUBMIT")
     if (!user && !token) {
       setModalContent('session-user', {
         title: 'Cadastre-se ou entre na sua conta',
@@ -112,12 +118,18 @@ function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
     }
 
     const is_public = isPublic === 'public';
+    let createdIdNote = "";
 
     if (!note) {
-      const res = await createNote(token, {
+      const createdNote = await createNote(token, {
         text,
         is_public
       })
+
+      updateA();
+      router.refresh()
+      if (createdNote) createdIdNote = createdNote.id;
+
     }
 
     if (note) {
@@ -128,7 +140,7 @@ function CreateNoteForm({ note, createdNoteFn }: CreateNoteFormProps) {
       })
     }
 
-    if (createdNoteFn) createdNoteFn();
+    if (createdNoteFn) createdNoteFn({ id: note ? note.id : createdIdNote, text, is_public });
     resetFields()
   }
 

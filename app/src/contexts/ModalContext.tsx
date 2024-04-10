@@ -3,27 +3,27 @@ import { assoc, dissoc } from "ramda";
 import { FC, ReactNode, createContext, useState } from "react";
 
 
-type ModalStateProps = {
+type ModalStateProps <T> = {
   title?: string,
-  content: FC<{ finallyFn: (() => void) | undefined }>,
+  content: FC<{ finallyFn: ((data: T) => void) | undefined }>,
   typeSize?: 'md' | 'lg',
-  finallyFn?: () => void
+  finallyFn?: (data: T) => void
 };
 
-type InitialStateContext = { [id: string]: ModalStateProps };
+type InitialStateContext = { [id: string]: ModalStateProps<any> };
 
-type setModalContent = (id: string, state?: ModalStateProps) => void;
+type setModalContentFn <T> = (id: string, state?: ModalStateProps<T>) => void;
 
-type UserModalProps = {
+type UserModalProps <T> = {
   modals: InitialStateContext,
-  setModalContent: setModalContent
+  setModalContent: setModalContentFn<T>
 };
 
 type UserModalProviderProps = {
   children: ReactNode,
 }
 
-const ModalContext = createContext({} as UserModalProps);
+const ModalContext = createContext({} as UserModalProps<any>);
 
 
 function ModalProvider({ children }: UserModalProviderProps) {
@@ -35,7 +35,7 @@ function ModalProvider({ children }: UserModalProviderProps) {
     </ModalContext.Provider>
   )
 
-  function setModalContent(id: string, modalState?: ModalStateProps) {
+  function setModalContent<T>(id: string, modalState?: ModalStateProps<T>) {
     if (!modalState) {
       setModals(dissoc(id, modals));
       return;

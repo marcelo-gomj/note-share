@@ -1,14 +1,16 @@
 import ListNotes from "@/components/ListNotes/ListNotes";
 import UserIconProfile from "@/components/UserIconProfile";
-import { fetchApi, listNotesByUser } from "@/services/fetch-api";
+import { fetchApi } from "@/services/fetch-api";
 import { cookies } from "next/headers";
-import { Suspense } from "react";
 
 export default async function ProfilePage({ params }: { params: { username: 'string ' } }) {
   const token = cookies().get('jwtToken')?.value
   const list = await fetchApi('/notes?user=novo.user', token, undefined, {
     method: 'GET',
-    cache: "no-store"
+    cache: "no-store",
+    next: {
+      tags: ["notes"]
+    }
   })
 
   return (
@@ -25,9 +27,7 @@ export default async function ProfilePage({ params }: { params: { username: 'str
         <div className="text-[1.5rem]">{params.username}</div>
       </header>
 
-      <Suspense fallback={<div>loading...</div>} >
         <ListNotes notes={list || []} />
-      </Suspense>
     </div>
   )
 }
