@@ -2,6 +2,8 @@
 
 import { Notes } from "@/types/database";
 import NoteItem from "./NoteItem";
+import { useState } from "react";
+import OptionsNote from "./OptionsNote";
 
 type ListNotesProps = {
   notes: Notes[]
@@ -10,38 +12,40 @@ type ListNotesProps = {
 type CallbackStateNotes = (notes: Notes[]) => Notes[];
 export type StateNoteFn = (stateFn: CallbackStateNotes) => void;
 
-async function ListNotes({ notes }: ListNotesProps) {
+function ListNotes({ notes }: ListNotesProps) {
+  const [listNotes, setListNotes] = useState(notes);
 
   return (
-    <section key={notes[0].id} className="py-10">
+    <section className="py-10">
       <div className="font-medium px-2 text-dark-text-300">
         Todas as notas
       </div>
 
       <div className="space-y-8 py-4">
         {
-          notes.length ?
-            notes.map(
+          listNotes.length > 0 ?
+            listNotes.map(
               note => (
                 <NoteItem
+                  key={note.id}
                   note={note}
-                />
+                >
+                  <OptionsNote note={note} controlListNotes={controlListNotes} />
+                </NoteItem>
               ))
-            : notFoundNotes()
+            : (
+              <div className="w-full px-3 py-10 text-[0.9rem]">
+                <p>Sem Notas</p>
+              </div>
+            )
         }
       </div>
     </section>
   )
 
-  function notFoundNotes() {
-    return (
-      <div className="w-full px-3 py-10 text-[0.9rem]">
-        <p>Sem Notas</p>
-      </div>
-    )
+  function controlListNotes(stateFn: CallbackStateNotes) {
+    setListNotes(stateFn(listNotes))
   }
-
-
 }
 
 export default ListNotes;
